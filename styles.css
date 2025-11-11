@@ -552,6 +552,30 @@ body {
     .auth-form .btn {
         width: 100%;
     }
+    /* 手机端：底部五个按钮保持正圆形并一行排布 */
+    .fab-container {
+        bottom: 16px;
+        gap: 8px;
+    }
+    .fab-button,
+    .fab-secondary {
+        width: 60px;
+        height: 60px;
+        padding: 0;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        line-height: 1.2;
+        white-space: nowrap;
+    }
+    /* 手机端：仪表盘页面不允许垂直滚动，内容限制在一屏 */
+    #dashboardPage.page.active {
+        height: 100vh;
+        overflow: hidden;
+        padding-bottom: 96px; /* 为底部圆形按钮留出空间 */
+    }
 }
 
 /* 动画效果 */
@@ -662,6 +686,34 @@ body {
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
   font-weight: 600;
   cursor: pointer;
+}
+
+/* 手机端覆盖：确保五个功能键为正圆，并避免页面上下滚动 */
+@media (max-width: 480px) {
+  .fab-container {
+    bottom: 16px;
+    gap: 8px;
+  }
+  .fab-button,
+  .fab-secondary {
+    width: 60px;
+    height: 60px;
+    padding: 0;
+    border-radius: 50% !important;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    line-height: 1.2;
+    white-space: nowrap;
+  }
+  /* 为底部圆形按钮留出空间并禁止垂直滚动 */
+  #dashboardPage.page,
+  #dashboardPage.page.active {
+    height: 100vh;
+    overflow-y: hidden;
+    padding-bottom: 96px;
+  }
 }
 
 /* 我的页面样式 */
