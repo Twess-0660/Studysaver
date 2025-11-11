@@ -576,6 +576,72 @@ body {
         overflow: hidden;
         padding-bottom: 96px; /* 为底部圆形按钮留出空间 */
     }
+    /* 手机端：首页推荐卡片压缩为三列，减少高度占用 */
+    .recommendation-cards {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+        align-items: stretch;
+    }
+    .recommendation-cards .card {
+        padding: 12px;
+        border-radius: 12px;
+        min-height: 110px;
+    }
+    .recommendation-cards .card-header {
+        margin-bottom: 8px;
+    }
+    .recommendation-cards .card-header h3 {
+        font-size: 0.95rem;
+    }
+    .recommendation-cards .badge {
+        padding: 2px 8px;
+        font-size: 0.7rem;
+    }
+    .recommendation-cards .card-content p {
+        display: none; /* 精简描述以缩短卡片 */
+    }
+    .recommendation-cards .card-stats {
+        gap: 8px;
+        margin-bottom: 0;
+    }
+    .recommendation-cards .card-stats span {
+        font-size: 0.75rem;
+    }
+    .recommendation-cards .btn {
+        display: none; /* 隐藏“查看详情”按钮以节省空间 */
+    }
+    /* 手机端：精简欢迎与问卷卡片占用 */
+    .welcome-section {
+        margin-top: 8px;
+    }
+    .welcome-section h2 {
+        font-size: 1.2rem;
+    }
+    .welcome-section p {
+        font-size: 0.85rem;
+        margin-bottom: 8px;
+    }
+    .survey-card {
+        margin: 8px 0 12px 0;
+        border-radius: 12px;
+    }
+    .survey-content {
+        padding: 12px;
+    }
+    .survey-title {
+        font-size: 1.2rem;
+        margin-bottom: 6px;
+    }
+    .survey-desc {
+        font-size: 0.9rem;
+        margin-bottom: 10px;
+    }
+    .survey-action {
+        padding: 8px 16px;
+        border-radius: 18px;
+        font-weight: 600;
+    }
 }
 
 /* 动画效果 */
