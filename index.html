@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudySave - 留学生个性化推荐</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- 登录页面 -->
+    <div id="loginPage" class="page active">
+        <div class="container">
+            <div class="auth-card">
+                <div class="logo">
+                    <h1>StudySave</h1>
+                    <p>留学生个性化推荐平台</p>
+                </div>
+                <form id="loginForm" class="auth-form">
+                    <div class="form-group">
+                        <label for="email">邮箱</label>
+                        <input type="email" id="email" name="email" required placeholder="请输入您的邮箱">
+                    </div>
+                    <div class="form-group">
+                        <label for="password">密码</label>
+                        <input type="password" id="password" name="password" required placeholder="请输入密码">
+                    </div>
+                    <button type="submit" class="btn btn-primary">登录</button>
+                    <div class="auth-links">
+                        <a href="#" id="registerLink">还没有账号？立即注册</a>
+                        <span class="divider">|</span>
+                        <a href="#" id="forgotPasswordLink">忘记密码？</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 个人信息编辑页面 -->
+    <div id="profilePage" class="page">
+        <div class="container">
+            <header class="settings-header">
+                <div class="header-content">
+                    <h1>个人信息</h1>
+                    <button id="backToDashboardFromProfile" class="btn btn-outline">返回</button>
+                </div>
+            </header>
+            <main class="settings-main">
+                <div class="settings-card">
+                    <h3>编辑资料</h3>
+                    <form id="profileForm">
+                        <div class="form-group">
+                            <label for="profileName">姓名</label>
+                            <input type="text" id="profileName" name="name" placeholder="请输入您的姓名" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="profileAvatar">头像</label>
+                            <div class="avatar-edit">
+                                <div id="profileAvatarPreview" class="avatar-display large">U</div>
+                                <input type="file" id="profileAvatar" accept="image/*">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">保存</button>
+                    </form>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- 注册页面 -->
+    <div id="registerPage" class="page">
+        <div class="container">
+            <div class="auth-card">
+                <div class="logo">
+                    <h1>StudySave</h1>
+                    <p>创建您的新账户</p>
+                </div>
+                <form id="registerForm" class="auth-form">
+                    <div class="form-group">
+                        <label for="registerEmail">邮箱</label>
+                        <div class="input-with-button">
+                            <input type="email" id="registerEmail" name="email" required placeholder="请输入您的邮箱">
+                            <button type="button" id="sendCodeBtn" class="btn btn-secondary btn-small">发送验证码</button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="verificationCode">验证码</label>
+                        <input type="text" id="verificationCode" name="verificationCode" required placeholder="请输入6位验证码" maxlength="6">
+                    </div>
+                    <div class="form-group">
+                        <label for="registerPassword">密码</label>
+                        <input type="password" id="registerPassword" name="password" required placeholder="请输入密码（至少6位）">
+                    </div>
+                    <div class="form-group">
+                        <label for="confirmPassword">确认密码</label>
+                        <input type="password" id="confirmPassword" name="confirmPassword" required placeholder="请再次输入密码">
+                    </div>
+                    <button type="submit" class="btn btn-primary">注册</button>
+                    <div class="auth-links">
+                        <a href="#" id="loginLink">已有账号？立即登录</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 重置密码页面 -->
+    <div id="resetPasswordPage" class="page">
+        <div class="container">
+            <div class="auth-card">
+                <div class="logo">
+                    <h1>StudySave</h1>
+                    <p>重置您的账户密码</p>
+                </div>
+                <form id="resetPasswordForm" class="auth-form">
+                    <div class="form-group">
+                        <label for="resetEmail">邮箱</label>
+                        <div class="input-with-button">
+                            <input type="email" id="resetEmail" name="email" required placeholder="请输入您的邮箱">
+                            <button type="button" id="resetSendCodeBtn" class="btn btn-secondary btn-small">发送验证码</button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="resetCode">验证码</label>
+                        <input type="text" id="resetCode" name="verificationCode" required placeholder="请输入6位验证码" maxlength="6">
+                    </div>
+                    <div class="form-group">
+                        <label for="resetNewPassword">新密码</label>
+                        <input type="password" id="resetNewPassword" name="password" required placeholder="请输入新密码（至少6位）">
+                    </div>
+                    <div class="form-group">
+                        <label for="resetConfirmPassword">确认新密码</label>
+                        <input type="password" id="resetConfirmPassword" name="confirmPassword" required placeholder="请再次输入新密码">
+                    </div>
+                    <button type="submit" class="btn btn-primary">重置密码</button>
+                    <div class="auth-links">
+                        <a href="#" id="backToLoginFromReset">返回登录</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 用户引导页面 -->
+    <div id="onboardingPage" class="page">
+        <div class="container">
+            <div class="onboarding-card">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div class="progress-text">
+                    <span id="currentStep">1</span> / <span id="totalSteps">7</span>
+                </div>
+                
+                <form id="onboardingForm">
+                <!-- 步骤1: 国家 -->
+                <div class="step active" data-step="1">
+                    <h2>您来自哪个国家？</h2>
+                    <div class="form-group">
+                        <select id="country" name="country" required>
+                            <option value="">请选择国家</option>
+                            <option value="china">中国</option>
+                            <option value="usa">美国</option>
+                            <option value="uk">英国</option>
+                            <option value="japan">日本</option>
+                            <option value="korea">韩国</option>
+                            <option value="other">其他</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- 步骤2: 预算 -->
+                <div class="step" data-step="2">
+                    <h2>您的月总预算是多少？</h2>
+                    <div class="form-group">
+                        <select id="budget" name="budget" required>
+                            <option value="">请选择预算范围</option>
+                            <option value="1000-2000">1000-2000元</option>
+                            <option value="2000-3000">2000-3000元</option>
+                            <option value="3000-5000">3000-5000元</option>
+                            <option value="5000-8000">5000-8000元</option>
+                            <option value="8000-12000">8000-12000元</option>
+                            <option value="12000-20000">12000-20000元</option>
+                            <option value="20000+">20000元以上</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- 步骤3: 所在地 -->
+                <div class="step" data-step="3">
+                    <h2>您目前所在的城市？</h2>
+                    <div class="form-group">
+                        <input type="text" id="city" name="city" required placeholder="请输入城市名称">
+                    </div>
+                </div>
+
+                <!-- 步骤4: 性别 -->
+                <div class="step" data-step="4">
+                    <h2>您的性别是？</h2>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="gender" value="male" required>
+                            <span>男性</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="gender" value="female" required>
+                            <span>女性</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="gender" value="other" required>
+                            <span>其他</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- 步骤5: 食物偏好 -->
+                <div class="step" data-step="5">
+                    <h2>您的食物偏好是什么？</h2>
+                    <div class="checkbox-group">
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="foodPreference" value="chinese">
+                            <span>中餐</span>
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="foodPreference" value="western">
+                            <span>西餐</span>
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="foodPreference" value="japanese">
+                            <span>日料</span>
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="foodPreference" value="korean">
+                            <span>韩料</span>
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="foodPreference" value="vegetarian">
+                            <span>素食</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- 步骤6: 用餐方式偏好 -->
+                <div class="step" data-step="6">
+                    <h2>你更倾向自己做饭、出去吃或者点外卖？</h2>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="mealPreference" value="cook" required>
+                            <span>自己做饭</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="mealPreference" value="eat_out" required>
+                            <span>出去吃</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="mealPreference" value="delivery" required>
+                            <span>点外卖</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- 步骤7: 热量控制 -->
+                <div class="step" data-step="7">
+                    <h2>您是否有热量控制需求？</h2>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="calorieControl" value="yes" required>
+                            <span>是，我需要控制热量摄入</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="calorieControl" value="no" required>
+                            <span>否，我不需要控制热量</span>
+                        </label>
+                    </div>
+                </div>
+                </form>
+
+                <div class="step-navigation">
+                    <button type="button" class="btn btn-secondary" id="prevStep" style="display: none;">上一步</button>
+                    <button type="button" class="btn btn-primary" id="nextStep">下一步</button>
+                    <button type="button" class="btn btn-primary" id="finishOnboarding" style="display: none;">完成</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 主面板页面 -->
+    <div id="dashboardPage" class="page">
+        <div class="container">
+            <header class="dashboard-header">
+                <div class="header-content">
+                    <div class="header-left">
+                        <button id="avatarBtn" class="avatar-button" aria-label="个人头像">
+                            <div id="avatarDisplay" class="avatar-display">U</div>
+                        </button>
+                    </div>
+                    <h1>StudySave</h1>
+                    <div class="header-right">
+                        <div class="header-search">
+                            <input id="searchInput" type="text" class="search-input" placeholder="搜索内容..." />
+                            <button id="searchBtn" class="btn btn-primary">搜索</button>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            
+            <main class="dashboard-main">
+                <!-- 问卷开启省钱计划卡片（首页独立框） -->
+                <section class="survey-card" id="surveyCard">
+                    <div class="survey-content">
+                        <h2 class="survey-title">点击问卷，开启你的省钱计划</h2>
+                        <p class="survey-desc">回答几个问题，我们将为你定制专属省钱方案。</p>
+                        <button id="openSurveyBtn" class="survey-action">开始问卷</button>
+                    </div>
+                </section>
+
+                <div class="welcome-section">
+                    <h2>欢迎回来！</h2>
+                    <p>基于您的预算和饮食偏好，我们为您推荐个性化的饮食计划</p>
+                </div>
+
+                <div class="recommendation-cards">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>今日推荐</h3>
+                            <span class="badge">个性化</span>
+                        </div>
+                        <div class="card-content">
+                            <p>根据您的预算和偏好，为您推荐最适合的饮食方案</p>
+                            <div class="card-stats">
+                                <span>预算匹配: 95%</span>
+                                <span>口味匹配: 88%</span>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary">查看详情</button>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>省钱攻略</h3>
+                            <span class="badge badge-secondary">热门</span>
+                        </div>
+                        <div class="card-content">
+                            <p>留学生必备的饮食省钱技巧，让您吃得健康又实惠</p>
+                            <div class="card-stats">
+                                <span>平均节省: 30%</span>
+                                <span>用户好评: 4.8/5</span>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary">查看详情</button>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>营养搭配</h3>
+                            <span class="badge badge-success">健康</span>
+                        </div>
+                        <div class="card-content">
+                            <p>专业的营养师推荐，确保您在留学期间营养均衡</p>
+                            <div class="card-stats">
+                                <span>营养评分: A+</span>
+                                <span>健康指数: 92%</span>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary">查看详情</button>
+                    </div>
+                </div>
+
+                
+            </main>
+            <!-- 底部功能按钮 -->
+            <div class="fab-container">
+                <button id="communityBtn" class="fab-secondary">社群</button>
+                <button id="matchBtn" class="fab-secondary">匹配</button>
+                <button id="planBtn" class="fab-button">计划</button>
+                <button id="myRealBtn" class="fab-secondary">我的</button>
+                <button id="myBtn" class="fab-secondary">热门方案</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 我的页面 -->
+    <div id="myPage" class="page">
+        <div class="container">
+            <header class="settings-header">
+                <div class="header-content">
+                    <h1>我的</h1>
+                    <button id="backToDashboardFromMy" class="btn btn-outline">返回</button>
+                </div>
+            </header>
+            <main class="settings-main">
+                <div class="settings-card">
+                    <div class="my-grid">
+                        <button class="my-item" id="myLikes">
+                            <span class="my-icon">❤</span>
+                            <span class="my-text">喜欢</span>
+                        </button>
+                        <button class="my-item" id="myFavorites">
+                            <span class="my-icon">★</span>
+                            <span class="my-text">收藏</span>
+                        </button>
+                        <button class="my-item" id="mySupport">
+                            <span class="my-icon">☎</span>
+                            <span class="my-text">我的客服</span>
+                        </button>
+                        <button class="my-item" id="mySavings">
+                            <span class="my-icon">¥</span>
+                            <span class="my-text">每月省钱</span>
+                        </button>
+                        <button class="my-item" id="mySettings">
+                            <span class="my-icon">⚙</span>
+                            <span class="my-text">设置</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="settings-card">
+                    <h3>主页编辑</h3>
+                    <div class="profile-edit-list">
+                        <div class="edit-item">
+                            <span class="edit-label">账号ID</span>
+                            <span id="viewAccountId" class="edit-value">未设置</span>
+                            <span class="edit-chevron disabled" title="账号ID不可修改">🔒</span>
+                        </div>
+                        <div class="edit-item">
+                            <span class="edit-label">生日</span>
+                            <span id="viewBirthday" class="edit-value">未设置</span>
+                            <button id="editBirthday" class="edit-chevron" aria-label="编辑生日">›</button>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- 我的信息编辑页面 -->
+    <div id="myEditPage" class="page">
+        <div class="container">
+            <header class="settings-header">
+                <div class="header-content">
+                    <h1>编辑主页信息</h1>
+                    <button id="backToMyPageFromEdit" class="btn btn-outline">返回</button>
+                </div>
+            </header>
+            <main class="settings-main">
+                <div class="settings-card">
+                    <form id="myEditForm">
+                        <div class="form-group">
+                            <label for="editBirthdayInput">生日</label>
+                            <input type="date" id="editBirthdayInput" name="birthday">
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">保存</button>
+                            <button type="button" id="cancelMyEdit" class="btn btn-secondary">取消</button>
+                        </div>
+                    </form>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- 设置页面 -->
+    <div id="settingsPage" class="page">
+        <div class="container">
+            <header class="settings-header">
+                <div class="header-content">
+                    <h1>设置</h1>
+                    <button id="backToDashboard" class="btn btn-outline">返回</button>
+                </div>
+            </header>
+            
+            <main class="settings-main">
+                <div class="settings-card">
+                    <h3>个人信息</h3>
+                    <form id="settingsForm">
+                        <div class="form-group">
+                            <label for="settingsEmail">邮箱</label>
+                            <input type="email" id="settingsEmail" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="settingsBudget">月总预算</label>
+                            <select id="settingsBudget" name="budget" required>
+                                <option value="1000-2000">1000-2000元</option>
+                                <option value="2000-3000">2000-3000元</option>
+                                <option value="3000-5000">3000-5000元</option>
+                                <option value="5000-8000">5000-8000元</option>
+                                <option value="8000-12000">8000-12000元</option>
+                                <option value="12000-20000">12000-20000元</option>
+                                <option value="20000+">20000元以上</option>
+                            </select>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">保存</button>
+                            <button type="button" class="btn btn-secondary" id="cancelSettings">返回</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- 隐私设置 -->
+                <div class="settings-card">
+                    <h3>隐私设置</h3>
+                    <div class="privacy-item">
+                        <span>允许他人查看我的省钱方案</span>
+                        <label class="switch">
+                            <input type="checkbox" id="privacyAllowPlans">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="privacy-item">
+                        <span>允许他人查看我的点赞</span>
+                        <label class="switch">
+                            <input type="checkbox" id="privacyAllowLikes">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="privacy-item">
+                        <span>允许他人查看我的收藏</span>
+                        <label class="switch">
+                            <input type="checkbox" id="privacyAllowFavorites">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="privacy-item">
+                        <span>允许他人通过ID查找到我</span>
+                        <label class="switch">
+                            <input type="checkbox" id="privacyAllowFindById">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- 外观设置 -->
+                <div class="settings-card">
+                    <h3>外观设置</h3>
+                    <div class="radio-group" id="themeRadio">
+                        <label><input type="radio" name="theme" id="themeLight" value="light"> 浅色</label>
+                        <label><input type="radio" name="theme" id="themeDark" value="dark"> 深色</label>
+                    </div>
+                </div>
+
+                <!-- 我的位置 -->
+                <div class="settings-card">
+                    <h3>我的位置</h3>
+                    <div class="location-row">
+                        <span id="locationSummary">未设置</span>
+                        <button id="editLocation" class="btn btn-secondary">编辑</button>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- 社群页面 -->
+    <div id="communityPage" class="page">
+        <div class="container">
+            <header class="settings-header">
+                <div class="header-content">
+                    <h1>社群</h1>
+                    <button id="backToDashboardFromCommunity" class="btn btn-outline">返回</button>
+                </div>
+            </header>
+            <main class="settings-main">
+                <div class="settings-card">
+                    <h3>群聊</h3>
+                    <div class="community-actions">
+                        <button id="createGroupBtn" class="btn btn-primary">创建群聊</button>
+                        <button id="inviteMembersBtn" class="btn btn-secondary">邀请成员</button>
+                    </div>
+                    <p class="muted">聊天与群管理功能即将上线，敬请期待。</p>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- 匹配页面 -->
+    <div id="matchPage" class="page">
+        <div class="container">
+            <header class="settings-header">
+                <div class="header-content">
+                    <h1>匹配</h1>
+                    <button id="backToDashboardFromMatch" class="btn btn-outline">返回</button>
+                </div>
+            </header>
+            <main class="settings-main">
+                <div class="settings-card">
+                    <h3>需求匹配</h3>
+                    <p class="muted">功能正在等待开发和完善。</p>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- 位置编辑页面 -->
+    <div id="locationEditPage" class="page">
+        <div class="container">
+            <header class="settings-header">
+                <div class="header-content">
+                    <h1>编辑位置</h1>
+                    <button id="backToSettingsFromLocation" class="btn btn-outline">返回</button>
+                </div>
+            </header>
+            <main class="settings-main">
+                <div class="settings-card">
+                    <form id="locationForm">
+                        <div class="form-group">
+                            <label for="locationCountry">国家</label>
+                            <input type="text" id="locationCountry" name="country" placeholder="例如：中国">
+                        </div>
+                        <div class="form-group">
+                            <label for="locationProvince">省份</label>
+                            <input type="text" id="locationProvince" name="province" placeholder="例如：广东省">
+                        </div>
+                        <div class="form-group">
+                            <label for="locationAddress">详细地址</label>
+                            <input type="text" id="locationAddress" name="address" placeholder="街道/门牌等">
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">保存</button>
+                            <button type="button" id="cancelLocation" class="btn btn-secondary">取消</button>
+                        </div>
+                    </form>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- 热门方案更多页面 -->
+    <div id="plansExplorePage" class="page">
+        <div class="container">
+            <header class="settings-header">
+                <div class="header-content">
+                    <h1>热门省钱方案</h1>
+                    <button id="backToDashboardFromPlans" class="btn btn-outline">返回</button>
+                </div>
+            </header>
+            <main class="settings-main">
+                <div class="plans-grid">
+                    <div class="plan-card">
+                        <h3>零基预算法</h3>
+                        <p>每笔收入均分配到具体用途，避免浪费。</p>
+                        <button class="btn btn-primary viewPlanBtn" data-plan="zeroBased">查看方案</button>
+                    </div>
+                    <div class="plan-card">
+                        <h3>信封预算法</h3>
+                        <p>按类别分信封，每月只花信封中的钱。</p>
+                        <button class="btn btn-primary viewPlanBtn" data-plan="envelope">查看方案</button>
+                    </div>
+                    <div class="plan-card">
+                        <h3>极简饮食月计划</h3>
+                        <p>固定菜谱与采购清单，控制餐饮支出。</p>
+                        <button class="btn btn-primary viewPlanBtn" data-plan="dietMonthly">查看方案</button>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
