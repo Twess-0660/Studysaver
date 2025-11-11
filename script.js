@@ -651,14 +651,10 @@ class StudySaveApp {
 
         // 模拟登录验证
         this.userData.email = email;
+        // 登录后直接进入主面板（跳过问卷）
+        this.userData.hasCompletedOnboarding = true;
         this.saveUserData();
-        
-        // 检查是否是首次登录
-        if (!this.userData.hasCompletedOnboarding) {
-            this.showPage('onboardingPage');
-        } else {
-            this.showPage('dashboardPage');
-        }
+        this.showPage('dashboardPage');
     }
 
     // 引导页面步骤控制
