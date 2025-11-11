@@ -38,6 +38,15 @@ class StudySaveApp {
         const totalStepsEl = document.getElementById('totalSteps');
         if (totalStepsEl) totalStepsEl.textContent = this.totalSteps;
         this.updateAvatarUI();
+
+        // 若用户勾选了“记住我”，同设备进入时直接进入主界面
+        try {
+            if (this.userData && this.userData.rememberMe && this.userData.email) {
+                this.showPage('dashboardPage');
+            }
+        } catch (e) {
+            console.warn('自动免登录检查失败：', e);
+        }
     }
 
     // 事件绑定
@@ -643,6 +652,7 @@ class StudySaveApp {
     handleLogin() {
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
+        const rememberMe = document.getElementById('rememberMe')?.checked || false;
 
         if (!email || !password) {
             alert('请填写完整的登录信息');
@@ -651,6 +661,8 @@ class StudySaveApp {
 
         // 模拟登录验证
         this.userData.email = email;
+        // 记录“记住我”状态
+        this.userData.rememberMe = !!rememberMe;
         // 登录后直接进入主面板（跳过问卷）
         this.userData.hasCompletedOnboarding = true;
         this.saveUserData();

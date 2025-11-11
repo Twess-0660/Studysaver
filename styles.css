@@ -1,6 +1,7 @@
 :root {
     --primary-color: #2D9CDB;
     --secondary-color: #27AE60;
+
     --accent-color: #56CCF2;
     --background-color: #000000; /* 主界面背景改为黑色 */
     --card-background: #111827;  /* 卡片背景改为深色 */
@@ -75,6 +76,7 @@ body {
     max-width: 400px;
     margin: 80px auto;
     text-align: center;
+    position: relative; /* 使“记住我”可固定到底部左侧 */
 }
 
 .logo h1 {
@@ -117,6 +119,15 @@ body {
 /* 输入占位符在深色模式下的可读性 */
 .form-group input::placeholder {
     color: var(--text-secondary);
+}
+
+/* 记住我（横向内联，与链接同一行） */
+.remember-inline {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-secondary);
+    font-size: 14px;
 }
 
 .input-with-button {
@@ -189,6 +200,11 @@ body {
 
 .auth-links {
     margin-top: 24px;
+}
+
+.links-center {
+    text-align: center;
+    margin-top: 8px;
 }
 
 .auth-links a {
@@ -510,6 +526,31 @@ body {
     .radio-option,
     .checkbox-option {
         padding: 12px;
+    }
+    /* 登录页：移动端布局与字号优化 */
+    .auth-links {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+    }
+    .remember-inline {
+        align-self: flex-start;
+        margin-bottom: 4px;
+    }
+    .links-center {
+        text-align: center;
+    }
+    .logo h1 {
+        font-size: 2rem;
+        line-height: 1.3;
+    }
+    .logo p {
+        font-size: 0.95rem;
+        line-height: 1.6;
+    }
+    .auth-form .btn {
+        width: 100%;
     }
 }
 
