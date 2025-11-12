@@ -795,7 +795,9 @@ class StudySaveApp {
     updateDashboard() {
         const welcomeSection = document.querySelector('.welcome-section h2');
         const displayName = this.getDisplayName();
-        welcomeSection.textContent = `欢迎回来，${displayName}！`;
+        if (welcomeSection) {
+            welcomeSection.textContent = `欢迎回来，${displayName}！`;
+        }
         
         // 根据用户数据更新推荐卡片
         this.updateRecommendationCards();
