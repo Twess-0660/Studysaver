@@ -566,6 +566,22 @@
                     </div>
                     <p class="muted">聊天与群管理功能即将上线，敬请期待。</p>
                 </div>
+                <!-- 朋友圈模块 -->
+                <div class="settings-card" id="momentsSection">
+                    <h3>朋友圈</h3>
+                    <div class="moments-editor">
+                        <select id="momentType">
+                            <option value="plan">分享计划</option>
+                            <option value="restaurant">推荐餐厅</option>
+                            <option value="supermarket">推荐超市</option>
+                        </select>
+                        <textarea id="momentsText" rows="3" placeholder="写点内容...（计划摘要、餐厅/超市推荐理由等）"></textarea>
+                        <button id="shareMomentBtn" class="btn btn-primary">分享</button>
+                    </div>
+                    <div class="moments-feed">
+                        <ul id="momentsFeed" class="list"></ul>
+                    </div>
+                </div>
             </main>
         </div>
     </div>
@@ -648,6 +664,61 @@
                         <p>固定菜谱与采购清单，控制餐饮支出。</p>
                         <button class="btn btn-primary viewPlanBtn" data-plan="dietMonthly">查看方案</button>
                     </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- 计划页面（周计划/行程/餐厅/打折超市） -->
+    <div id="planPage" class="page">
+        <div class="container">
+            <header class="settings-header">
+                <div class="header-content">
+                    <h1>计划</h1>
+                    <button id="backToDashboardFromPlan" class="btn btn-outline">返回</button>
+                </div>
+            </header>
+            <main class="plan-main">
+                <div class="settings-card plan-section" id="weeklyPlanSection">
+                    <h3>周计划</h3>
+                    <div id="weeklyPlanContent" class="plan-content muted">暂无数据，完成问卷后自动生成。</div>
+                </div>
+
+                <div class="settings-card plan-section" id="weeklyScheduleSection">
+                    <h3>每周行程规划</h3>
+                    <div id="weeklyScheduleContent" class="plan-content muted">暂无数据，完成问卷后自动生成。</div>
+                </div>
+
+                <div class="settings-card plan-section" id="affordableRestaurantsSection">
+                    <h3>实惠餐厅</h3>
+                    <ul id="affordableRestaurantsList" class="list"></ul>
+                </div>
+
+                <div class="settings-card plan-section" id="discountSupermarketsSection">
+                    <h3>当地打折超市推荐</h3>
+                    <ul id="discountSupermarketsList" class="list"></ul>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- 他人主页页面（查看他人计划与朋友圈） -->
+    <div id="userHomePage" class="page">
+        <div class="container">
+            <header class="settings-header">
+                <div class="header-content">
+                    <h1 id="userHomeTitle">TA的主页</h1>
+                    <button id="backToDashboardFromUserHome" class="btn btn-outline">返回</button>
+                </div>
+            </header>
+            <main class="settings-main">
+                <div class="settings-card">
+                    <h3>TA的计划</h3>
+                    <div id="otherUserPlanContent" class="plan-content muted">暂无数据</div>
+                </div>
+                <div class="settings-card">
+                    <h3>TA的朋友圈</h3>
+                    <ul id="otherUserMomentsFeed" class="list"></ul>
                 </div>
             </main>
         </div>

@@ -11,6 +11,13 @@ class StudySaveApp {
     init() {
         this.bindEvents();
         this.loadUserData();
+        // 加载计划数据（如有）
+        this.planData = this.loadPlanData();
+        // 初始化朋友圈数据结构
+        if (!this.userData.moments) {
+            this.userData.moments = [];
+            this.saveUserData();
+        }
         // 初始化隐私与位置默认值
         if (!this.userData.privacy) {
             this.userData.privacy = {
@@ -243,7 +250,7 @@ class StudySaveApp {
         const planBtn = document.getElementById('planBtn');
         if (planBtn) {
             planBtn.addEventListener('click', () => {
-                this.showPage('plansExplorePage');
+                this.showPage('planPage');
             });
         }
         const communityBtn = document.getElementById('communityBtn');
@@ -271,6 +278,14 @@ class StudySaveApp {
             });
         }
 
+        // 计划页面返回
+        const backToDashboardFromPlan = document.getElementById('backToDashboardFromPlan');
+        if (backToDashboardFromPlan) {
+            backToDashboardFromPlan.addEventListener('click', () => {
+                this.showPage('dashboardPage');
+            });
+        }
+
         // 主题选择事件
         const themeLight = document.getElementById('themeLight');
         const themeDark = document.getElementById('themeDark');
@@ -293,11 +308,11 @@ class StudySaveApp {
             });
         }
 
-        // 搜索功能
+        // 搜索功能（统一：支持按ID进入他人主页）
         const searchBtn = document.getElementById('searchBtn');
         const searchInput = document.getElementById('searchInput');
         if (searchBtn && searchInput) {
-            searchBtn.addEventListener('click', () => {
+            const handleSearch = () => {
                 const keyword = searchInput.value.trim();
                 if (!keyword) {
                     this.showNotification('请输入搜索关键词', 'info');
@@ -305,13 +320,28 @@ class StudySaveApp {
                 }
                 this.userData.lastSearch = keyword;
                 this.saveUserData();
+
+                // 如果看起来是账号ID，尝试打开他人主页
+                const idPattern = /^[A-Z][0-9]{7,}$/; // 示例：A1234567
+                if (idPattern.test(keyword) || keyword === this.userData.accountId) {
+                    const data = this.loadOtherUserData(keyword);
+                    if (!data) {
+                        this.showNotification('未找到该ID的用户', 'info');
+                        return;
+                    }
+                    this.openUserHome(keyword, data);
+                    return;
+                }
+
+                // 其他关键词：保留占位提示
                 this.showNotification(`搜索 “${keyword}” 功能即将上线`, 'info');
-            });
-            // 回车触发搜索
+            };
+
+            searchBtn.addEventListener('click', handleSearch);
             searchInput.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter') {
                     e.preventDefault();
-                    searchBtn.click();
+                    handleSearch();
                 }
             });
         }
@@ -341,6 +371,52 @@ class StudySaveApp {
         if (inviteMembersBtn) {
             inviteMembersBtn.addEventListener('click', () => {
                 this.showNotification('邀请成员功能即将上线', 'info');
+            });
+        }
+
+        // 朋友圈发布与交互
+        const shareMomentBtn = document.getElementById('shareMomentBtn');
+        if (shareMomentBtn) {
+            shareMomentBtn.addEventListener('click', () => {
+                const typeSelect = document.getElementById('momentType');
+                const textArea = document.getElementById('momentsText');
+                const type = typeSelect ? typeSelect.value : 'plan';
+                const text = textArea ? textArea.value.trim() : '';
+                if (!text) {
+                    this.showNotification('请填写内容后再分享', 'info');
+                    return;
+                }
+                this.addMoment({ type, text });
+                if (textArea) textArea.value = '';
+                this.showNotification('已分享到朋友圈', 'success');
+            });
+        }
+        const momentsFeed = document.getElementById('momentsFeed');
+        if (momentsFeed) {
+            momentsFeed.addEventListener('click', (e) => {
+                const target = e.target;
+                const li = target.closest('[data-id]');
+                if (!li) return;
+                const id = li.getAttribute('data-id');
+                if (target.matches('.btn-like')) {
+                    this.toggleLikeMoment(id);
+                } else if (target.matches('.btn-collect')) {
+                    this.toggleCollectMoment(id);
+                } else if (target.matches('.btn-comment')) {
+                    const content = prompt('输入评论');
+                    if (content) this.addCommentMoment(id, content);
+                }
+            });
+            // 初始化渲染
+            this.renderMomentsFeed();
+        }
+
+        // 已移除社群页单独搜索入口，主页面搜索已统一支持ID跳转
+
+        const backToDashboardFromUserHome = document.getElementById('backToDashboardFromUserHome');
+        if (backToDashboardFromUserHome) {
+            backToDashboardFromUserHome.addEventListener('click', () => {
+                this.showPage('dashboardPage');
             });
         }
         const backToDashboardFromMatch = document.getElementById('backToDashboardFromMatch');
@@ -623,6 +699,8 @@ class StudySaveApp {
             this.updateMyEditForm();
         } else if (pageId === 'locationEditPage') {
             this.updateLocationForm();
+        } else if (pageId === 'planPage') {
+            this.updatePlanPage();
         }
     }
 
@@ -765,8 +843,25 @@ class StudySaveApp {
         this.userData.hasCompletedOnboarding = true;
         this.saveUserData();
         
-        alert('欢迎加入StudySave！为您生成个性化推荐...');
-        this.showPage('dashboardPage');
+        // 添加对话框：是否立即查看计划页面
+        const goView = window.confirm('问卷完成！是否立即查看“计划”页面？');
+        if (goView) {
+            this.showNotification('正在为您生成个性化周计划...', 'info');
+            this.generatePlanData()
+                .then(() => {
+                    this.showPage('planPage');
+                })
+                .catch(() => {
+                    this.showNotification('生成计划失败，稍后重试', 'error');
+                    this.showPage('dashboardPage');
+                });
+        } else {
+            this.showNotification('已返回主页，计划将后台生成', 'success');
+            this.generatePlanData().catch(() => {
+                this.showNotification('生成计划失败，稍后重试', 'error');
+            });
+            this.showPage('dashboardPage');
+        }
     }
 
     // 收集引导数据
@@ -822,6 +917,212 @@ class StudySaveApp {
             // 为素食用户添加特殊推荐
             console.log('用户偏好素食，调整推荐内容');
         }
+    }
+
+    // 更新计划页面内容
+    updatePlanPage() {
+        const data = this.planData || {};
+        const weeklyPlanContent = document.getElementById('weeklyPlanContent');
+        const weeklyScheduleContent = document.getElementById('weeklyScheduleContent');
+        const restaurantsList = document.getElementById('affordableRestaurantsList');
+        const supermarketsList = document.getElementById('discountSupermarketsList');
+
+        if (weeklyPlanContent) {
+            weeklyPlanContent.classList.remove('muted');
+            weeklyPlanContent.textContent = data.weeklyPlan || '暂无数据';
+        }
+        if (weeklyScheduleContent) {
+            weeklyScheduleContent.classList.remove('muted');
+            weeklyScheduleContent.textContent = data.weeklySchedule || '暂无数据';
+        }
+        if (restaurantsList) {
+            restaurantsList.innerHTML = '';
+            (data.restaurants || []).forEach(item => {
+                const li = document.createElement('li');
+                li.textContent = `${item.name} · 人均${item.price} · ${item.note || ''}`;
+                restaurantsList.appendChild(li);
+            });
+            if (!data.restaurants || data.restaurants.length === 0) {
+                const li = document.createElement('li');
+                li.className = 'muted';
+                li.textContent = '暂无推荐';
+                restaurantsList.appendChild(li);
+            }
+        }
+        if (supermarketsList) {
+            supermarketsList.innerHTML = '';
+            (data.supermarkets || []).forEach(item => {
+                const li = document.createElement('li');
+                li.textContent = `${item.name} · ${item.discount} · ${item.note || ''}`;
+                supermarketsList.appendChild(li);
+            });
+            if (!data.supermarkets || data.supermarkets.length === 0) {
+                const li = document.createElement('li');
+                li.className = 'muted';
+                li.textContent = '暂无推荐';
+                supermarketsList.appendChild(li);
+            }
+        }
+    }
+
+    // 生成计划数据（本地模拟，后续可接入代理）
+    async generatePlanData() {
+        try {
+            const city = this.userData.city || '本地城市';
+            const budget = this.userData.budget || '适中预算';
+            const mealPref = this.userData.mealPreference || '灵活用餐';
+
+            this.planData = {
+                weeklyPlan: `基于您的“${budget}”与“${mealPref}”，本周建议：周内自煮，周末外食一次，早晚简餐。`,
+                weeklySchedule: `周一到周五：学习/工作 + 健身 30 分钟；周末：采购与社交，城市：${city}`,
+                restaurants: [
+                    { name: '家常小馆', price: '30-40元', note: '口味偏中餐，评价高' },
+                    { name: '学生餐厅A', price: '20-30元', note: '人气高，套餐实惠' }
+                ],
+                supermarkets: [
+                    { name: 'X-Mart', discount: '每周促销 20%', note: '周三蔬果特价' },
+                    { name: 'Value超市', discount: '会员日 15% OFF', note: '粮油优惠' }
+                ]
+            };
+
+            localStorage.setItem('studySave.planData', JSON.stringify(this.planData));
+        } catch (e) {
+            console.error('生成计划数据失败', e);
+            throw e;
+        }
+    }
+
+    loadPlanData() {
+        try {
+            const raw = localStorage.getItem('studySave.planData');
+            return raw ? JSON.parse(raw) : null;
+        } catch {
+            return null;
+        }
+    }
+
+    // —— 朋友圈逻辑 ——
+    addMoment({ type = 'plan', text = '' }) {
+        const moment = {
+            id: String(Date.now()),
+            userId: this.userData.accountId || '我',
+            type,
+            text,
+            likes: 0,
+            collects: 0,
+            comments: [],
+            createdAt: new Date().toISOString(),
+        };
+        this.userData.moments.unshift(moment);
+        this.saveUserData();
+        this.renderMomentsFeed();
+    }
+
+    renderMomentsFeed() {
+        const feed = document.getElementById('momentsFeed');
+        if (!feed) return;
+        const items = (this.userData.moments || []).map(m => {
+            const typeLabel = m.type === 'plan' ? '计划' : (m.type === 'restaurant' ? '餐厅' : '超市');
+            return `
+                <li class="moment-card" data-id="${m.id}">
+                    <div class="moment-title">${typeLabel}</div>
+                    <div class="moment-text">${this.escapeHtml(m.text)}</div>
+                    <div class="moment-meta">来自：${this.escapeHtml(m.userId)} · ${new Date(m.createdAt).toLocaleString()}</div>
+                    <div class="moment-actions">
+                        <button class="btn btn-secondary btn-like">赞 (${m.likes})</button>
+                        <button class="btn btn-secondary btn-collect">收藏 (${m.collects})</button>
+                        <button class="btn btn-secondary btn-comment">评论 (${m.comments.length})</button>
+                    </div>
+                </li>
+            `;
+        }).join('');
+        feed.innerHTML = items || '<li class="muted">暂无朋友圈内容</li>';
+    }
+
+    toggleLikeMoment(id) {
+        const m = (this.userData.moments || []).find(x => x.id === id);
+        if (!m) return;
+        m.likes = (m.likes || 0) + 1;
+        this.saveUserData();
+        this.renderMomentsFeed();
+    }
+
+    toggleCollectMoment(id) {
+        const m = (this.userData.moments || []).find(x => x.id === id);
+        if (!m) return;
+        m.collects = (m.collects || 0) + 1;
+        this.saveUserData();
+        this.renderMomentsFeed();
+    }
+
+    addCommentMoment(id, content) {
+        const m = (this.userData.moments || []).find(x => x.id === id);
+        if (!m) return;
+        m.comments.push({ userId: this.userData.accountId || '我', content, at: Date.now() });
+        this.saveUserData();
+        this.renderMomentsFeed();
+    }
+
+    // —— 他人主页 ——
+    openUserHome(userId, data) {
+        const titleEl = document.getElementById('userHomeTitle');
+        if (titleEl) titleEl.textContent = `${userId}的主页`;
+        const planEl = document.getElementById('otherUserPlanContent');
+        if (planEl) planEl.textContent = data.planSummary || '暂无数据';
+        this.renderOtherUserMomentsFeed(data.moments || []);
+        this.showPage('userHomePage');
+    }
+
+    renderOtherUserMomentsFeed(list) {
+        const feed = document.getElementById('otherUserMomentsFeed');
+        if (!feed) return;
+        const items = list.map(m => {
+            const typeLabel = m.type === 'plan' ? '计划' : (m.type === 'restaurant' ? '餐厅' : '超市');
+            return `
+                <li class="moment-card">
+                    <div class="moment-title">${typeLabel}</div>
+                    <div class="moment-text">${this.escapeHtml(m.text)}</div>
+                    <div class="moment-meta">来自：${this.escapeHtml(m.userId)} · ${new Date(m.createdAt).toLocaleString()}</div>
+                </li>
+            `;
+        }).join('');
+        feed.innerHTML = items || '<li class="muted">暂无朋友圈内容</li>';
+    }
+
+    loadOtherUserData(userId) {
+        // 简易模拟数据；若输入当前用户ID，则展示自己的数据
+        if (this.userData.accountId && userId === this.userData.accountId) {
+            return {
+                planSummary: document.getElementById('weeklyPlanContent')?.textContent || '暂无数据',
+                moments: this.userData.moments || [],
+            };
+        }
+        const mock = {
+            A1234567: {
+                planSummary: '工作日节省开销：带饭、步行3公里、周末大采购',
+                moments: [
+                    { id: 'm1', userId: 'A1234567', type: 'plan', text: '我的周计划：每天自己做饭，骑车上下班', createdAt: new Date().toISOString() },
+                    { id: 'm2', userId: 'A1234567', type: 'restaurant', text: '小李快餐，10元套餐很实惠', createdAt: new Date().toISOString() },
+                ],
+            },
+            B7654321: {
+                planSummary: '学生党省钱路线：图书馆学习+食堂套餐+团购超市',
+                moments: [
+                    { id: 'm3', userId: 'B7654321', type: 'supermarket', text: '社区团购超市：牛奶买一赠一', createdAt: new Date().toISOString() },
+                ],
+            },
+        };
+        return mock[userId] || null;
+    }
+
+    // 安全转义
+    escapeHtml(str) {
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
     }
 
     // 更新设置表单
